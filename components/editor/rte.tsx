@@ -1,28 +1,24 @@
-'use client'
-
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import { FC, useEffect, useState } from 'react'
 import ToolBar from './toolbar'
-import BulletList from '@tiptap/extension-bullet-list'
-import { useState } from 'react'
+import { socket } from '@/socket'
 
 const Tiptap = () => {
-   const [data, setData] = useState('')
+   const [edata, setData] = useState('')
+
+   useEffect(() => {
+      socket.on('editorData', (data) => {
+         editor?.commands.setContent(data)
+      })
+   }, [socket, socket.id, edata])
+
    const editor = useEditor({
-      extensions: [
-         StarterKit,
-         BulletList.configure({
-            itemTypeName: 'listItem',
-            keepMarks: true,
-            keepAttributes: true,
-            HTMLAttributes: {
-               class: 'list-disc',
-            },
-         }),
-      ],
-      content: data,
+      extensions: [StarterKit],
+      content: edata,
       onUpdate: ({ editor }) => {
-         setData(editor.getHTML())
+         const newData = editor.getHTML()
+         socket.emit('editorData', newData)
       },
    })
 
@@ -31,14 +27,10 @@ const Tiptap = () => {
    }
 
    return (
-      <>
-         <div className="">
-            <div>
-               <ToolBar editor={editor} />
-               <EditorContent editor={editor} />
-            </div>
-         </div>
-      </>
+      <div className="editor-container">
+         <ToolBar editor={editor} />
+         <EditorContent editor={editor} />
+      </div>
    )
 }
 

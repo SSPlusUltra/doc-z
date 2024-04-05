@@ -4,12 +4,16 @@
 
 .ProseMirror {
    border: solid black;
-   min-width: 1000px;
-   min-height: 550px;
+   width: 60vw; /* 70% of viewport width */
+   height: 70vh; /* 70% of viewport height */
    color: black;
    padding: 10px;
    overflow: auto;
+   border-top-right-radius: 15px;
+   border-bottom-right-radius: 15px;
+   border-bottom-left-radius: 15px;
 }
+
 .ProseMirror:focus {
    outline: none; /* Remove outline when focused */
 }
